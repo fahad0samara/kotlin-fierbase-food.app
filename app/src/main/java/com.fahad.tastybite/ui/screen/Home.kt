@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -23,6 +24,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CutCornerShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Search
@@ -32,6 +34,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -44,6 +47,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
@@ -268,106 +272,101 @@ fun FoodItem(
   food: FoodItem,
   onTap: (FoodItem) -> Unit
 ) {
-    Card(
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+  Card(
+    modifier = Modifier
+      .fillMaxWidth()
+      .padding(8.dp),
+    onClick = { onTap(food) },
+
+  ) {
+    Box(
+      modifier = Modifier
+        .fillMaxSize()
+    ) {
+      // Background Image with Semi-Transparent Overlay
+      Image(
+        painter = painterResource(id = food.imageResId),
+        contentDescription = null,
         modifier = Modifier
           .fillMaxWidth()
-          .padding(2.dp),
-        onClick = { onTap(food) }
-    ) {
-        Column(
-            modifier = Modifier
-              .fillMaxSize()
-              .background(
-                color = if (isSystemInDarkTheme()) {
-                  colorResource(id = R.color.black)
-                } else {
-                  colorResource(id = R.color.white)
-                }
-              )
+          .height(120.dp),
+        contentScale = ContentScale.Crop
+      )
+      Box(
+        modifier = Modifier
+          .fillMaxSize()
+          .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.5f))
+      )
+
+      // Text Content
+      Column(
+        modifier = Modifier
+          .fillMaxSize()
+          .padding(8.dp)
+      ) {
+        Text(
+          text = food.name,
+          fontWeight = FontWeight.Bold,
+          modifier = Modifier
+            .fillMaxWidth(),
+          color = MaterialTheme.colorScheme.onPrimary,
+          fontSize = 16.sp,
+          maxLines = 1,
+          overflow = TextOverflow.Ellipsis
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+          text = "${food.price}$",
+          modifier = Modifier
+            .fillMaxWidth(),
+          fontSize = 14.sp,
+          color = MaterialTheme.colorScheme.onPrimary
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Row(
+          modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp),
+          verticalAlignment = Alignment.CenterVertically,
+          horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Image(
-                painter = painterResource(id = food.imageResId),
-                contentDescription = null,
-                modifier = Modifier
-                  .fillMaxWidth()
-                  .heightIn(min = 170.dp, max = 170.dp),
-                contentScale = ContentScale.Crop
-            )
-            Spacer(modifier = Modifier.height(8.dp))
+          Row(
+            modifier = Modifier,
+            verticalAlignment = Alignment.CenterVertically,
+          ) {
             Text(
-                text = food.name,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier
-                  .padding(horizontal = 4.dp)
-                  .fillMaxWidth(),
-                color = if (isSystemInDarkTheme()) {
-                    Color(0xFF91F1FF)
-
-                } else {
-                    Color(0xFF006973)
-
-                },
-                fontSize = if (food.chef > 20.toString()) 14.sp else 17.sp,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+              text = food.servingSize.toString(),
+              fontSize = 14.sp,
+              color = MaterialTheme.colorScheme.onPrimary
             )
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(
-                modifier = Modifier
-                  .fillMaxWidth()
-                  .padding(10.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = "${food.price}$",
-                    modifier = Modifier,
-                    fontSize = 18.sp,
-                    color = if (isSystemInDarkTheme()) {
-                        colorResource(id = R.color.white)
-                    } else {
-                        colorResource(id = R.color.black)
-                    }
-                )
-                Row(
-                    modifier = Modifier,
-
-
-                    verticalAlignment = Alignment.CenterVertically,
-
-
-                    ) {
-                    Text(
-                        text = food.servingSize.toString(),
-                        fontSize = 18.sp,
-                        color = if (isSystemInDarkTheme()) {
-                            colorResource(id = R.color.white)
-                        } else {
-                            colorResource(id = R.color.black)
-                        }
-                    )
-                    Icon(
-                        imageVector = Icons.Default.List,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .padding(end = 4.dp),
-                        tint = if (isSystemInDarkTheme()) {
-                            Color(0xFF91F1FF)
-
-                        } else {
-                            Color(0xFF006973)
-
-                        },
-                    )
-
-
-                }
-
-            }
+            Icon(
+              imageVector = Icons.Default.List,
+              contentDescription = null,
+              modifier = Modifier.padding(start = 4.dp),
+              tint = MaterialTheme.colorScheme.onPrimary
+            )
+          }
+          IconButton(
+            onClick = { /* Handle the click event */ },
+            modifier = Modifier
+              .size(24.dp)
+              .background(MaterialTheme.colorScheme.primary, CircleShape)
+          ) {
+            Icon(
+              imageVector = Icons.Default.List,
+              contentDescription = null,
+              tint = MaterialTheme.colorScheme.onPrimary
+            )
+          }
         }
+      }
     }
+  }
 }
+
+
+
+
 
 
 

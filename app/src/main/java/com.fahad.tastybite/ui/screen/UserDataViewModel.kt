@@ -1,13 +1,16 @@
 package com.fahad.tastybite.ui.screen
 
+import android.content.Intent
 import android.net.Uri
 import android.util.Log
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.fahad.tastybite.domain.model.Response
 import com.fahad.tastybite.domain.model.User
 import com.fahad.tastybite.domain.repository.AuthRepository
+import com.fahad.tastybite.ui.MainActivity
 
 import dagger.hilt.android.lifecycle.HiltViewModel
 
@@ -153,13 +156,17 @@ class UserDataViewModel @Inject constructor(private val authRepository: AuthRepo
 
 
 
-    fun logout(   ) {
+    fun logout(
+        navController: NavController
+    ) {
         viewModelScope.launch {
           // Check authentication state
             authRepository.logout()
                 // Navigate to the login screen if the user is not authenticated
                 _user.value = null
-
+          val intent = Intent(navController.context, MainActivity::class.java)
+          ActivityCompat.finishAffinity(navController.context as MainActivity)
+          navController.context.startActivity(intent)
 
 
 

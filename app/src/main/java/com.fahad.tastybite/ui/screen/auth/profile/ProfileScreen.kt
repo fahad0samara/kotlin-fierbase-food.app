@@ -2,6 +2,7 @@ package com.fahad.tastybite.ui.screen.auth.profile
 
 import android.content.Intent
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -57,60 +58,58 @@ import com.fahad.tastybite.ui.screen.UserDataViewModel
 fun ProfileScreen(
   navController: NavController, userDataViewModel: UserDataViewModel
 ) {
-    val user by userDataViewModel.user.collectAsState()
-    val displayName = user?.displayName
-    val email = user?.email
-    val photoUrl = user?.photoUrl
+  val user by userDataViewModel.user.collectAsState()
+  val displayName = user?.displayName
+  val email = user?.email
+  val photoUrl = user?.photoUrl
 
-    val error = userDataViewModel.profileError.collectAsState().value
-    val success = userDataViewModel.profileSuccess.collectAsState().value
-    val isLoading = userDataViewModel.isLoading.collectAsState().value
-    val isEmailVerified by userDataViewModel.isEmailVerified.collectAsState()
+  val error = userDataViewModel.profileError.collectAsState().value
+  val success = userDataViewModel.profileSuccess.collectAsState().value
+  val isLoading = userDataViewModel.isLoading.collectAsState().value
+  val isEmailVerified by userDataViewModel.isEmailVerified.collectAsState()
 
-    val largeRadialGradient = MaterialTheme.colorScheme.background.copy(alpha = 0.1f)
-
-
+  val largeRadialGradient = MaterialTheme.colorScheme.background.copy(alpha = 0.1f)
 
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
 
-            .background(largeRadialGradient)
-            .padding(10.dp), contentAlignment = Alignment.TopCenter
+
+  Box(
+    modifier = Modifier
+      .fillMaxSize()
+
+      .background(largeRadialGradient)
+      .padding(10.dp), contentAlignment = Alignment.TopCenter
+  ) {
+
+    Column(
+      modifier = Modifier
+
+        .fillMaxSize()
+        .padding(top = 30.dp, bottom = 30.dp)
+
+        .background(MaterialTheme.colorScheme.surface)
+        .border(
+          2.dp, MaterialTheme.colorScheme.secondary, shape = RoundedCornerShape(25.dp)
+        )
+        .fillMaxWidth()
+
+        .padding(10.dp),
+      horizontalAlignment = Alignment.CenterHorizontally,
+      verticalArrangement = Arrangement.Top
     ) {
+      if (!isEmailVerified) {
 
-        Column(
-            modifier = Modifier
+        VerifyEmailCard(
+          isLoading = isLoading, onVerifyEmailClicked = userDataViewModel::markEmailAsVerified,
 
-                .fillMaxSize()
-                .padding(top = 30.dp, bottom = 30.dp)
+          modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+        )
 
-                .background(MaterialTheme.colorScheme.surface)
-                .border(
-                    2.dp, MaterialTheme.colorScheme.secondary, shape = RoundedCornerShape(25.dp)
-                )
-                .fillMaxWidth()
+      }
 
-                .padding(10.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top
-        ) {
-            if (!isEmailVerified) {
-
-                VerifyEmailCard(
-                    isLoading = isLoading,
-                    onVerifyEmailClicked = userDataViewModel::markEmailAsVerified,
-
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp)
-                )
-
-
-            }
-
-                AsyncImageProfile(photoUrl = photoUrl)
+      AsyncImageProfile(photoUrl = photoUrl)
 
 
 
@@ -118,165 +117,141 @@ fun ProfileScreen(
 
 
 
-            Spacer(modifier = Modifier.height(8.dp))
+      Spacer(modifier = Modifier.height(8.dp))
 
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
-                modifier = Modifier.padding(16.dp)
-            ) {
+      Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier.padding(16.dp)
+      ) {
 
+        UserInfoRow(icon = Icons.Default.Person, text = displayName ?: "")
 
-                UserInfoRow(icon = Icons.Default.Person, text = displayName ?: "")
+        Spacer(modifier = Modifier.height(8.dp))
 
-                Spacer(modifier = Modifier.height(8.dp))
+        UserInfoRow(icon = Icons.Default.Email, text = email ?: "")
+      }
 
-                UserInfoRow(icon = Icons.Default.Email, text = email ?: "")
-            }
+      Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
+      Button(
+        onClick = { navController.navigate("edit_profile") },
+        modifier = Modifier
+          .fillMaxWidth()
+          .height(50.dp),
+        shape = RoundedCornerShape(8.dp),
+        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
+      ) {
+        Text("Edit Profile", color = Color.White)
+      }
 
-            Button(
-                onClick = { navController.navigate("edit_profile") },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp),
-                shape = RoundedCornerShape(8.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
-            ) {
-                Text("Edit Profile", color = Color.White)
-            }
+      Spacer(modifier = Modifier.height(16.dp))
+      Button(onClick = {
+        Log.d("ProfileScreen", "Logging out...")
+        try {
+          userDataViewModel.logout(navController)
 
-            Spacer(modifier = Modifier.height(16.dp))
-          Button(
-            onClick = {
-              Log.d("ProfileScreen", "Logging out...")
-              try {
-                userDataViewModel.logout()
-
-
-
-                val intent = Intent(navController.context, MainActivity::class.java)
-                ActivityCompat.finishAffinity(navController.context as MainActivity)
-                navController.context.startActivity(intent)
-
-
-
-
-
-
-              } catch (e: Exception) {
-                Log.e("ProfileScreen", "Error logging out: ${e.message}", e)
-              }
-            }
-
-          )
-          {
-            if (isLoading) {
-              // Show a loading indicator
-              CircularProgressIndicator(color = Color.White)
-            } else {
-              Text("Sign Out", color = Color.White)
-            }
-          }
-
-
-
+        } catch (e: Exception) {
+          Log.e("ProfileScreen", "Error logging out: ${e.message}", e)
+          Toast.makeText( navController.context, "Error logging out: ${e.message}", Toast.LENGTH_SHORT).show()
         }
+      }
+
+      ) {
+        if (isLoading) {
+          // Show a loading indicator
+          CircularProgressIndicator(color = Color.White)
+        } else {
+          Text("Sign Out", color = Color.White)
+        }
+      }
+
     }
+  }
 
-    SnackbarWrapperProfile(
-        success = success, error = error, onDismiss = userDataViewModel::clearMessages
+  SnackbarWrapperProfile(
+    success = success, error = error, onDismiss = userDataViewModel::clearMessages
 
-
-    )
+  )
 }
-
 
 @Composable
 fun UserInfoRow(icon: ImageVector, text: String) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier
-            .background(
-                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f),
-                shape = RoundedCornerShape(20.dp)
-            )
-            .padding(10.dp)
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 1f)
-        )
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(
-            text = text,
-            fontWeight = FontWeight.Bold,
-            fontSize = 15.sp,
-            fontFamily = FontFamily.Monospace,
-            color = MaterialTheme.colorScheme.onSurface
-        )
-    }
+  Row(
+    verticalAlignment = Alignment.CenterVertically,
+    horizontalArrangement = Arrangement.SpaceBetween,
+    modifier = Modifier
+      .background(
+        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f), shape = RoundedCornerShape(20.dp)
+      )
+      .padding(10.dp)
+  ) {
+    Icon(
+      imageVector = icon,
+      contentDescription = null,
+      tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 1f)
+    )
+    Spacer(modifier = Modifier.width(8.dp))
+    Text(
+      text = text,
+      fontWeight = FontWeight.Bold,
+      fontSize = 15.sp,
+      fontFamily = FontFamily.Monospace,
+      color = MaterialTheme.colorScheme.onSurface
+    )
+  }
 }
-
-
-
 
 @Composable
 fun VerifyEmailCard(
-    isLoading: Boolean,
-    onVerifyEmailClicked: () -> Unit,
-    modifier: Modifier = Modifier,
+  isLoading: Boolean,
+  onVerifyEmailClicked: () -> Unit,
+  modifier: Modifier = Modifier,
 
+  ) {
+  var isButtonClicked by remember { mutableStateOf(false) }
+  Card(
+    modifier = Modifier
+      .fillMaxWidth()
+      .padding(8.dp),
+  ) {
+    Column(
+      modifier = Modifier.padding(8.dp), horizontalAlignment = Alignment.CenterHorizontally
     ) {
-    var isButtonClicked by remember { mutableStateOf(false) }
-    Card(
+
+      Text(
+        if (isButtonClicked) "if you have already verified your email, please sign out and sign in again or click on already verified button below"
+        else "Verify your email to get full access.Check your email and click on the link to verify your email",
+
+        modifier = Modifier.padding(8.dp),
+
+        fontSize = 12.sp,
+        color = Color.White,
+        textAlign = TextAlign.Center,
+        fontWeight = FontWeight.Bold,
+      )
+
+      Spacer(modifier = Modifier.height(4.dp))
+
+
+      LoadingButton(
+        isLoading = isLoading,
+        text = if (isButtonClicked) "already verified"
+        else "Verify Email",
+        onClick = {
+          isButtonClicked = true
+          onVerifyEmailClicked()
+        },
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp),
-    ) {
-        Column(
-            modifier = Modifier.padding(8.dp), horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-
-            Text(
-                if (isButtonClicked) "if you have already verified your email, please sign out and sign in again or click on already verified button below"
-                else "Verify your email to get full access.Check your email and click on the link to verify your email",
-
-
-                modifier = Modifier.padding(8.dp),
-
-                fontSize = 12.sp,
-                color = Color.White,
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Bold,
-            )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-
-            LoadingButton(
-                isLoading = isLoading,
-                text = if (isButtonClicked) "already verified"
-                else "Verify Email",
-                onClick = {
-                    isButtonClicked = true
-                    onVerifyEmailClicked()
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp),
-                enabled = !isLoading,
-                textloading = "Verifying email..."
-            )
-
-
-        }
-
+          .fillMaxWidth()
+          .height(50.dp),
+        enabled = !isLoading,
+        textloading = "Verifying email..."
+      )
 
     }
+
+  }
 }
 
 

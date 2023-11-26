@@ -8,7 +8,7 @@ import androidx.navigation.NavController
 import com.fahad.tastybite.domain.model.Response
 import com.fahad.tastybite.domain.model.User
 import com.fahad.tastybite.domain.repository.AuthRepository
-import com.fahad.tastybite.ui.navigation.Graph
+
 import com.fahad.tastybite.ui.screen.UserDataViewModel
 
 
@@ -47,7 +47,7 @@ class RegisterViewModel @Inject constructor(
                 if (registrationResult is Response.Success) {
                     val user = registrationResult.data
                     userDataViewModel.setUser(user)
-                  navController.navigate( Graph.HOME)
+                  navController.navigate( "home")
                 } else if (registrationResult is Response.Failure) {
                     _registrationState.value = registrationResult
 

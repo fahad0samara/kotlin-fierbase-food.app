@@ -1,32 +1,36 @@
 package com.fahad.tastybite.ui.navigation
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.Image
+
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
+
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
+
+import androidx.compose.ui.res.painterResource
+
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.fahad.tastybite.R
 
-import com.fahad.tastybite.ui.navigation.auth.AuthNavigation
-import com.fahad.tastybite.ui.navigation.auth.AuthScreen
+
+
 import com.fahad.tastybite.ui.navigation.bottom.BottomBarRoot
 import com.fahad.tastybite.ui.screen.UserDataViewModel
+import com.fahad.tastybite.ui.screen.auth.login.LoginScreen
 import com.fahad.tastybite.ui.screen.auth.login.LoginViewModel
+import com.fahad.tastybite.ui.screen.auth.register.RegisterScreen
 import com.fahad.tastybite.ui.screen.auth.register.RegisterViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
@@ -38,78 +42,82 @@ fun RootNavigation(navController: NavHostController) {
   val registerViewModel: RegisterViewModel = hiltViewModel()
   val userDataViewModel: UserDataViewModel = hiltViewModel()
 
-
-
   // Check authentication state when the RootNavigationGraph is recomposed
   LaunchedEffect(Unit) {
     // Simulate a splash screen delay if needed
     delay(1000) // 2 seconds delay, adjust as needed
-
+    userDataViewModel.getUserData()
     // Check authentication state
     if (Firebase.auth.currentUser == null) {
       // Navigate to the login screen if the user is not authenticated
-      navController.navigate(AuthScreen.LOGIN.route)
+      navController.navigate("login")
     } else {
       // Navigate to the home screen if the user is authenticated
-      navController.navigate(Graph.HOME)
+      navController.navigate("home")
     }
   }
 
+  // In RootNavigation composable
   NavHost(
-    navController = navController,
-    route = Graph.ROOT,
-    startDestination = "SPLASH"
+    navController = navController, route = "root"
+    , startDestination = "splash"
   ) {
+    composable(route = "splash") {
+      SplashScreen()
+    }
 
-      composable(route = "SPLASH") {
-        SplashScreen()
-      }
-    AuthNavigation(
-      navController = navController,
-      loginViewModel = loginViewModel,
-      registerViewModel = registerViewModel,
-    )
-    composable(route = Graph.HOME) {
-      BottomBarRoot(
-
-
-
+    composable("login") {
+      LoginScreen(
+        navController = navController, loginViewModel = loginViewModel
       )
     }
-  }
-}
-
-
-
-object Graph {
-  const val ROOT = "root_graph"
-  const val AUTHENTICATION = "auth_graph"
-  const val HOME = "home_graph"
-  const val Search = "Search_graph"
-    const val SPLASH = "splash"
-}
-@Composable
-fun SplashScreen() {
-    Box(
-        modifier = Modifier
-        .fillMaxSize()
-        .background(Color.White), // Set a background color for the splash screen
-        contentAlignment = Alignment.Center
-    ) {
-        // Add your splash screen content
-        Column(
-        horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-        Text(
-            text = "bookstore",
-            fontSize = 40.sp,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
-        }
+    composable( "register") {
+      RegisterScreen(
+        navController = navController, registerViewModel = registerViewModel
+      )
     }
 
+    composable(route = "home") {
+      BottomBarRoot()
+    }
+  }
+
+
+
+
 }
+
+
+
+
+
+  @Composable
+  fun SplashScreen() {
+    Box(
+      modifier = Modifier.fillMaxSize(),
+
+      contentAlignment = Alignment.Center
+    ) {
+      // Add your splash screen content
+      Column(
+        horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center
+      ) {
+
+        Image(
+          painter = painterResource(id = R.drawable.logo),
+
+          contentDescription = null,
+          alignment = Alignment.Center,
+          modifier = Modifier.height(300.dp)
+
+        )
+
+      }
+    }
+
+  }
+
+
+
+
 

@@ -16,7 +16,7 @@ import androidx.navigation.navigation
 import com.fahad.tastybite.ui.screen.favorite.FavoriteViewModel
 
 
-import com.fahad.tastybite.ui.navigation.Graph
+
 import com.fahad.tastybite.ui.screen.Home
 import com.fahad.tastybite.ui.screen.ItemDetailsScreen
 import com.fahad.tastybite.ui.screen.SearchScreen
@@ -44,7 +44,7 @@ fun BottomBarNavigation(navController: NavHostController,
 
   NavHost(
     navController = navController,
-    route = Graph.HOME,
+    route = "root",
     startDestination = BottomBar.Home.route
   ) {
     composable(route = BottomBar.Home.route) {
@@ -90,25 +90,25 @@ fun BottomBarNavigation(navController: NavHostController,
 
 
 
-    searchNavGraph(navController = navController)
+//    searchNavGraph(navController = navController)
   }
 }
 
-fun NavGraphBuilder.searchNavGraph(navController: NavHostController) {
-
-  navigation(
-    route = Graph.Search,
-    startDestination = SearchNavGraph.Search.route
-  ) {
-    composable(route = SearchNavGraph.Search.route) {
-        SearchScreen(navController = navController, viewModel = hiltViewModel())
-
-
-
-    }
-
-    }
-  }
+//fun NavGraphBuilder.searchNavGraph(navController: NavHostController) {
+//
+//  navigation(
+//    route = Graph.SEARCH.route,
+//    startDestination = SearchNavGraph.Search.route
+//  ) {
+//    composable(route = SearchNavGraph.Search.route) {
+//        SearchScreen(navController = navController, viewModel = hiltViewModel())
+//
+//
+//
+//    }
+//
+//    }
+//  }
 
 
 sealed class SearchNavGraph(val route: String) {

@@ -8,6 +8,7 @@ import androidx.navigation.NavController
 import com.fahad.tastybite.domain.model.Response
 import com.fahad.tastybite.domain.model.User
 import com.fahad.tastybite.domain.repository.AuthRepository
+
 import dagger.hilt.android.lifecycle.HiltViewModel
 
 import kotlinx.coroutines.delay
@@ -152,10 +153,19 @@ class UserDataViewModel @Inject constructor(private val authRepository: AuthRepo
 
 
 
-    fun logout() {
+    fun logout(   ) {
         viewModelScope.launch {
+          // Check authentication state
             authRepository.logout()
-            _user.value = null
+                // Navigate to the login screen if the user is not authenticated
+                _user.value = null
+
+
+
+
+
+
+
         }
     }
 }

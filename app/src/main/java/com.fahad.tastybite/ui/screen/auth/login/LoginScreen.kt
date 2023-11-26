@@ -30,7 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.fahad.tastybite.ui.navigation.auth.AuthScreen
+
 import com.fahad.tastybite.domain.model.Response
 
 import com.fahad.tastybite.ui.screen.auth.compenets.DisplayError
@@ -113,7 +113,7 @@ fun LoginScreen(
             NavigationText(
                 text = "Don't have an account? Register",
                 onClick = {
-                    navController.navigate(AuthScreen.REGISTER.route)
+//                    navController.navigate(AuthScreen.REGISTER.route)
                 }
             )
         }

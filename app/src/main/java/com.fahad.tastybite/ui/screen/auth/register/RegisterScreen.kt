@@ -35,7 +35,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.fahad.tastybite.ui.navigation.auth.AuthScreen
+
 import com.fahad.tastybite.domain.model.Response
 import com.fahad.tastybite.ui.screen.auth.compenets.DisplayError
 import com.fahad.tastybite.ui.screen.auth.compenets.EmailAndPasswordInputs
@@ -171,7 +171,7 @@ fun RegisterScreen(
             NavigationText(
                 text = "Already have an account? Login",
                 onClick = {
-                    navController.navigate(AuthScreen.LOGIN.route)
+//                    navController.navigate(AuthScreen.LOGIN.route)
                 }
             )
         }

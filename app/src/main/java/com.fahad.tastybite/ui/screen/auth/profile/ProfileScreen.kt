@@ -1,5 +1,7 @@
 package com.fahad.tastybite.ui.screen.auth.profile
 
+import android.content.Intent
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -20,6 +22,7 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -38,19 +41,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.ActivityCompat
 import androidx.navigation.NavController
-import com.fahad.tastybite.ui.navigation.auth.AuthScreen
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import com.fahad.tastybite.ui.MainActivity
 
 import com.fahad.tastybite.util.Button.LoadingButton
 import com.fahad.tastybite.util.snackBar.SnackbarWrapperProfile
 
 import com.fahad.tastybite.util.image.AsyncImageProfile
-import com.fahad.tastybite.ui.navigation.Graph
+
 import com.fahad.tastybite.ui.screen.UserDataViewModel
 
 @Composable
 fun ProfileScreen(
-    navController: NavController, userDataViewModel: UserDataViewModel
+  navController: NavController, userDataViewModel: UserDataViewModel
 ) {
     val user by userDataViewModel.user.collectAsState()
     val displayName = user?.displayName
@@ -142,25 +147,41 @@ fun ProfileScreen(
                 Text("Edit Profile", color = Color.White)
             }
 
-            Button(
-              onClick = {
+            Spacer(modifier = Modifier.height(16.dp))
+          Button(
+            onClick = {
+              Log.d("ProfileScreen", "Logging out...")
+              try {
                 userDataViewModel.logout()
-                navController.navigate(AuthScreen.LOGIN.route) {
-                  // Use NavOptions to specify popUpTo destination
-                  popUpTo(route = Graph.AUTHENTICATION) {
-                    inclusive = true
-                  }
-                }
-              },
-                modifier = Modifier
-                    .padding(top = 8.dp)
-                    .fillMaxWidth()
-                    .height(50.dp),
-                shape = RoundedCornerShape(8.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
-            ) {
-                Text("Sign Out", color = Color.White)
+
+
+
+                val intent = Intent(navController.context, MainActivity::class.java)
+                ActivityCompat.finishAffinity(navController.context as MainActivity)
+                navController.context.startActivity(intent)
+
+
+
+
+
+
+              } catch (e: Exception) {
+                Log.e("ProfileScreen", "Error logging out: ${e.message}", e)
+              }
             }
+
+          )
+          {
+            if (isLoading) {
+              // Show a loading indicator
+              CircularProgressIndicator(color = Color.White)
+            } else {
+              Text("Sign Out", color = Color.White)
+            }
+          }
+
+
+
         }
     }
 

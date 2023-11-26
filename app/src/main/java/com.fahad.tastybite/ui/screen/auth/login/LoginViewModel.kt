@@ -7,7 +7,6 @@ import androidx.navigation.NavController
 import com.fahad.tastybite.domain.model.Response
 import com.fahad.tastybite.domain.model.User
 import com.fahad.tastybite.domain.repository.AuthRepository
-import com.fahad.tastybite.ui.navigation.Graph
 import com.fahad.tastybite.ui.screen.UserDataViewModel
 
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -41,7 +40,10 @@ class LoginViewModel @Inject constructor(private val repository: AuthRepository,
                 val user = loginResult.data
 
                 userDataViewModel.setUser(user)
-              navController.navigate( Graph.HOME)
+                navController.navigate(
+                      "home"
+
+                  )
             }
 
 

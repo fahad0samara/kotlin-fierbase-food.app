@@ -113,7 +113,7 @@ fun LoginScreen(
             NavigationText(
                 text = "Don't have an account? Register",
                 onClick = {
-//                    navController.navigate(AuthScreen.REGISTER.route)
+                    navController.navigate("register")
                 }
             )
         }

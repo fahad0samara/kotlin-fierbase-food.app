@@ -39,7 +39,7 @@ class LoginViewModel @Inject constructor(private val repository: AuthRepository,
                 // Login successful, update the user in the ViewModel
                 val user = loginResult.data
 
-                userDataViewModel.setUser(user)
+                userDataViewModel.getUserData()
                 navController.navigate(
                       "home"
 

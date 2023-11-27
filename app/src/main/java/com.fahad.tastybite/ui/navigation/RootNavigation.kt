@@ -46,7 +46,7 @@ fun RootNavigation(navController: NavHostController) {
   LaunchedEffect(Unit) {
     // Simulate a splash screen delay if needed
     delay(1000) // 2 seconds delay, adjust as needed
-    userDataViewModel.getUserData()
+
     // Check authentication state
     if (Firebase.auth.currentUser == null) {
       // Navigate to the login screen if the user is not authenticated

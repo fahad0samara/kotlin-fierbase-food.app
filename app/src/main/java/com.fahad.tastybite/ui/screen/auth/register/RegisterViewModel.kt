@@ -46,7 +46,7 @@ class RegisterViewModel @Inject constructor(
 
                 if (registrationResult is Response.Success) {
                     val user = registrationResult.data
-                    userDataViewModel.setUser(user)
+                    userDataViewModel.getUserData()
                   navController.navigate( "home")
                 } else if (registrationResult is Response.Failure) {
                     _registrationState.value = registrationResult

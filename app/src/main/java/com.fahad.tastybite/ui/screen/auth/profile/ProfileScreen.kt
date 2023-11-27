@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.AlertDialog
 
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -43,8 +44,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.app.ActivityCompat
+
 import androidx.navigation.NavController
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.fahad.tastybite.ui.MainActivity
 
 import com.fahad.tastybite.util.Button.LoadingButton
@@ -70,52 +71,62 @@ fun ProfileScreen(
 
   val largeRadialGradient = MaterialTheme.colorScheme.background.copy(alpha = 0.1f)
 
+  val showLogoutDialog by userDataViewModel.showLogoutDialog.collectAsState()
 
+  // Show the confirmation dialog if the user clicks the "Sign Out" button
+  if (showLogoutDialog) {
+    LogoutConfirmationDialog(
+      onConfirm = {
+        try {
+          userDataViewModel.logout(
+            navController = navController,
+          )
 
+          val intent = Intent(navController.context, MainActivity::class.java)
+          ActivityCompat.finishAffinity(navController.context as MainActivity)
+          navController.context.startActivity(intent)
+        } catch (e: Exception) {
+          Log.e("ProfileScreen", "Error logging out: ${e.message}", e)
+        }
+        userDataViewModel.setShowLogoutDialog(false)
+
+      },
+      onDismiss = { userDataViewModel.setShowLogoutDialog(false) }
+
+    )
+  }
 
   Box(
     modifier = Modifier
       .fillMaxSize()
-
       .background(largeRadialGradient)
       .padding(10.dp), contentAlignment = Alignment.TopCenter
   ) {
 
     Column(
       modifier = Modifier
-
         .fillMaxSize()
         .padding(top = 30.dp, bottom = 30.dp)
-
         .background(MaterialTheme.colorScheme.surface)
         .border(
           2.dp, MaterialTheme.colorScheme.secondary, shape = RoundedCornerShape(25.dp)
         )
         .fillMaxWidth()
-
         .padding(10.dp),
       horizontalAlignment = Alignment.CenterHorizontally,
       verticalArrangement = Arrangement.Top
     ) {
       if (!isEmailVerified) {
-
         VerifyEmailCard(
-          isLoading = isLoading, onVerifyEmailClicked = userDataViewModel::markEmailAsVerified,
-
+          isLoading = isLoading,
+          onVerifyEmailClicked = userDataViewModel::markEmailAsVerified,
           modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
         )
-
       }
 
       AsyncImageProfile(photoUrl = photoUrl)
-
-
-
-
-
-
 
       Spacer(modifier = Modifier.height(8.dp))
 
@@ -124,11 +135,8 @@ fun ProfileScreen(
         verticalArrangement = Arrangement.Center,
         modifier = Modifier.padding(16.dp)
       ) {
-
         UserInfoRow(icon = Icons.Default.Person, text = displayName ?: "")
-
         Spacer(modifier = Modifier.height(8.dp))
-
         UserInfoRow(icon = Icons.Default.Email, text = email ?: "")
       }
 
@@ -146,34 +154,54 @@ fun ProfileScreen(
       }
 
       Spacer(modifier = Modifier.height(16.dp))
-      Button(onClick = {
-        Log.d("ProfileScreen", "Logging out...")
-        try {
-          userDataViewModel.logout(navController)
 
-        } catch (e: Exception) {
-          Log.e("ProfileScreen", "Error logging out: ${e.message}", e)
-          Toast.makeText( navController.context, "Error logging out: ${e.message}", Toast.LENGTH_SHORT).show()
-        }
-      }
-
+      Button(
+        onClick = { userDataViewModel.setShowLogoutDialog(true) },
+        modifier = Modifier
+          .fillMaxWidth()
+          .height(50.dp),
+        shape = RoundedCornerShape(8.dp),
+        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
       ) {
-        if (isLoading) {
-          // Show a loading indicator
-          CircularProgressIndicator(color = Color.White)
-        } else {
-          Text("Sign Out", color = Color.White)
-        }
+        Text("Sign Out", color = Color.White)
       }
-
     }
   }
 
   SnackbarWrapperProfile(
     success = success, error = error, onDismiss = userDataViewModel::clearMessages
-
   )
 }
+
+@Composable
+fun LogoutConfirmationDialog(
+  onConfirm: () -> Unit,
+  onDismiss: () -> Unit
+) {
+  AlertDialog(
+    onDismissRequest = { onDismiss() },
+    title = { Text("Confirm Logout") },
+    text = { Text("Are you sure you want to sign out?") },
+    confirmButton = {
+      Button(
+        onClick = {
+          onConfirm()
+          onDismiss()
+        }
+      ) {
+        Text("Yes")
+      }
+    },
+    dismissButton = {
+      Button(
+        onClick = { onDismiss() }
+      ) {
+        Text("No")
+      }
+    }
+  )
+}
+
 
 @Composable
 fun UserInfoRow(icon: ImageVector, text: String) {

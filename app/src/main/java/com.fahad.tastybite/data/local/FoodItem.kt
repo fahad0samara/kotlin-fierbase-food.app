@@ -107,5 +107,58 @@ val availableFoods = listOf(
     FoodType.Dessert,
     200,
     3
-  )
+  ),
+
+
+    FoodItem(
+    "Caesar Salad",
+  "Chef Julia",
+  "Crisp romaine lettuce, garlic croutons, and parmesan cheese tossed in Caesar dressing.",
+  R.drawable.caesar_salad,
+  9.99,
+  FoodType.Appetizer,
+  350,
+  1
+),
+FoodItem(
+"Shrimp Scampi",
+"Chef Antonio",
+"Tender shrimp sautéed in garlic and white  sauce, served over linguine.",
+R.drawable.shrimp_scampi,
+16.99,
+FoodType.MainCourse,
+800,
+1
+),
+FoodItem(
+"Blueberry Cheesecake",
+"Chef Isabella",
+"Creamy cheesecake with a blueberry swirl, topped with fresh blueberries.",
+R.drawable.blueberry_cheesecake,
+11.99,
+FoodType.Dessert,
+500,
+1
+),
+FoodItem(
+"Caprese Skewers",
+"Chef Giovanni",
+"Fresh mozzarella, cherry tomatoes, and basil drizzled with balsamic glaze.",
+R.drawable.caprese_skewers,
+8.49,
+FoodType.Appetizer,
+300,
+4
+),
+FoodItem(
+"Iced Green Tea",
+"Chef Jasmine",
+"A cool and soothing iced green tea, perfect for a refreshing break.",
+R.drawable.iced_green_tea,
+3.99,
+FoodType.Beverage,
+50,
+1
+)
+
 )

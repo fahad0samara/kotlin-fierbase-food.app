@@ -2,7 +2,7 @@ package com.fahad.tastybite.ui.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,7 +12,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
+
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -24,7 +24,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CutCornerShape
-import androidx.compose.foundation.shape.RoundedCornerShape
+
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Search
@@ -254,9 +254,11 @@ fun FoodList(
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(16.dp),
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        contentPadding = PaddingValues(2.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+
+
     ) {
         items(items) { item ->
             FoodItem(item, onTap = {
@@ -277,7 +279,7 @@ fun FoodItem(
       .fillMaxWidth()
       .padding(8.dp),
     onClick = { onTap(food) },
-
+    shape = CutCornerShape(8.dp),
   ) {
     Box(
       modifier = Modifier
@@ -289,73 +291,56 @@ fun FoodItem(
         contentDescription = null,
         modifier = Modifier
           .fillMaxWidth()
-          .height(120.dp),
+          .height(190.dp),
         contentScale = ContentScale.Crop
       )
       Box(
         modifier = Modifier
           .fillMaxSize()
-          .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.5f))
       )
 
       // Text Content
-      Column(
+      Box(
         modifier = Modifier
           .fillMaxSize()
-          .padding(8.dp)
+          .align(Alignment.BottomStart)
       ) {
-        Text(
-          text = food.name,
-          fontWeight = FontWeight.Bold,
-          modifier = Modifier
-            .fillMaxWidth(),
-          color = MaterialTheme.colorScheme.onPrimary,
-          fontSize = 16.sp,
-          maxLines = 1,
-          overflow = TextOverflow.Ellipsis
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-        Text(
-          text = "${food.price}$",
-          modifier = Modifier
-            .fillMaxWidth(),
-          fontSize = 14.sp,
-          color = MaterialTheme.colorScheme.onPrimary
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Row(
+        Column(
           modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 8.dp),
-          verticalAlignment = Alignment.CenterVertically,
-          horizontalArrangement = Arrangement.SpaceBetween
+            .background(
+              color = colorResource(id = R.color.black).copy(alpha = 0.7f)
+            ) // Semi-transparent background
         ) {
+          Text(
+            text = food.name,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier
+              .fillMaxWidth()
+              .padding(8.dp),
+            color = Color.White,
+            fontSize = 16.sp,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+          )
+          Spacer(modifier = Modifier.height(4.dp))
+
           Row(
-            modifier = Modifier,
+            modifier = Modifier
+              .fillMaxWidth()
+              .padding(8.dp),
             verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
           ) {
             Text(
-              text = food.servingSize.toString(),
+              text = "${food.price}$",
               fontSize = 14.sp,
-              color = MaterialTheme.colorScheme.onPrimary
+              color = Color.White,
             )
-            Icon(
-              imageVector = Icons.Default.List,
-              contentDescription = null,
-              modifier = Modifier.padding(start = 4.dp),
-              tint = MaterialTheme.colorScheme.onPrimary
-            )
-          }
-          IconButton(
-            onClick = { /* Handle the click event */ },
-            modifier = Modifier
-              .size(24.dp)
-              .background(MaterialTheme.colorScheme.primary, CircleShape)
-          ) {
-            Icon(
-              imageVector = Icons.Default.List,
-              contentDescription = null,
-              tint = MaterialTheme.colorScheme.onPrimary
+            Text(
+              text = "${food.calories} cal", // Assuming there's a 'calories' property in FoodItem
+              fontSize = 14.sp,
+              color = Color.White,
             )
           }
         }
@@ -363,6 +348,9 @@ fun FoodItem(
     }
   }
 }
+
+
+
 
 
 
